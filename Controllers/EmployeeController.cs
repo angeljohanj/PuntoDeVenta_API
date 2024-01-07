@@ -4,6 +4,10 @@ using System.Data.SqlClient;
 using System.Data;
 using PuntoDeVenta_API.Data;
 using PuntoDeVenta_API.Models;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Net;
+using System.Runtime.ConstrainedExecution;
+using System.Xml.Linq;
 
 namespace PuntoDeVenta_API.Controllers
 {
@@ -59,6 +63,94 @@ namespace PuntoDeVenta_API.Controllers
             }
 
             return new JsonResult(emps);
+        }
+
+        [HttpGet][Route("/GetAnEmployee")]
+
+        public JsonResult GetEmployee (int id)
+        {
+            var emp = new EmployeeModel();
+            try
+            {
+                var connection = new DataConnection();
+                string procedure = "sp_GetEmployee";
+                SqlDataReader dReader;
+                using(var conn = new SqlConnection(connection.GetString()))
+                {
+                    using(var sqlCmd = new SqlCommand(procedure, conn))
+                    {
+                        sqlCmd.CommandType = CommandType.StoredProcedure;
+                        sqlCmd.Parameters.AddWithValue("id", id);
+                        conn.Open();
+                        using(dReader = sqlCmd.ExecuteReader())
+                        {
+                            if (dReader.Read())
+                            {
+                                emp.name = dReader["name"].ToString();
+                                emp.lastname = dReader["lastname"].ToString();
+                                emp.age = dReader["age"].ToString();
+                                emp.cedula = dReader["cedula"].ToString();
+                                emp.cel = dReader["cel"].ToString();
+                                emp.tel = dReader["tel"].ToString();
+                                emp.email = dReader["email"].ToString();
+                                emp.birthdate = Convert.ToDateTime(dReader["birthdate"]);
+                                emp.address = dReader["address"].ToString();
+                                emp.role = dReader["role"].ToString();
+                                emp.nationality = dReader["nationality"].ToString();
+                            }
+                            else
+                            {
+                                emp = null;
+                            }
+                        }
+                    }
+                }
+            }catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message, "No such employee");
+                
+            }
+
+            return new JsonResult(emp);
+        }
+
+        [HttpPost][Route("/CreateEmployee")]
+        public JsonResult CreateEmployee(EmployeeModel newEmp)
+        {
+            var ans = false;
+            try
+            {
+                DataConnection connection = new DataConnection();
+                string procedure = "sp_RegEmployee";
+                using(var conn = new SqlConnection(connection.GetString()))
+                {
+                    using( var sqlCmd = new SqlCommand(procedure, conn))
+                    {
+                        sqlCmd.CommandType = CommandType.StoredProcedure;
+                        sqlCmd.Parameters.AddWithValue("name", newEmp.name);
+                        sqlCmd.Parameters.AddWithValue("lastname", newEmp.lastname);
+                        sqlCmd.Parameters.AddWithValue("age", newEmp.age);
+                        sqlCmd.Parameters.AddWithValue("cedula", newEmp.cedula);
+                        sqlCmd.Parameters.AddWithValue("cel", newEmp.cel);
+                        sqlCmd.Parameters.AddWithValue("tel", newEmp.tel);
+                        sqlCmd.Parameters.AddWithValue("email", newEmp.email);
+                        sqlCmd.Parameters.AddWithValue("birthdate", newEmp.birthdate);
+                        sqlCmd.Parameters.AddWithValue("address", newEmp.address);
+                        sqlCmd.Parameters.AddWithValue("role", newEmp.role);
+                        sqlCmd.Parameters.AddWithValue("nationality", newEmp.nationality);
+                        conn.Open();
+                        var result= sqlCmd.ExecuteNonQuery();
+                        Console.WriteLine(result + "rows were affected!");
+                    }
+                }
+                ans = true;
+            }catch( Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                ans = false;
+            }
+
+            return new JsonResult(ans);
         }
     }
 }
