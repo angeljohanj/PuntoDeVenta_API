@@ -152,5 +152,72 @@ namespace PuntoDeVenta_API.Controllers
 
             return new JsonResult(ans);
         }
+
+        [HttpPut][Route("/EditEmployee")]
+
+        public JsonResult EditEmployee(EmployeeModel oEmp)
+        {
+            var ans = false;
+            try
+            {
+                var connection = new DataConnection();
+                string procedure = "sp_EditEmployee";
+                using(var conn = new SqlConnection(connection.GetString()))
+                {
+                    using(var sqlCmd = new SqlCommand(procedure, conn))
+                    {
+                        sqlCmd.CommandType = CommandType.StoredProcedure;
+                        sqlCmd.Parameters.AddWithValue("id", oEmp.id);
+                        sqlCmd.Parameters.AddWithValue("name", oEmp.name);
+                        sqlCmd.Parameters.AddWithValue("lastname", oEmp.lastname);
+                        sqlCmd.Parameters.AddWithValue("age", oEmp.age);
+                        sqlCmd.Parameters.AddWithValue("cedula", oEmp.cedula);
+                        sqlCmd.Parameters.AddWithValue("cel", oEmp.cel);
+                        sqlCmd.Parameters.AddWithValue("tel", oEmp.tel);
+                        sqlCmd.Parameters.AddWithValue("email", oEmp.email);
+                        sqlCmd.Parameters.AddWithValue("birthdate", oEmp.birthdate);
+                        sqlCmd.Parameters.AddWithValue("address", oEmp.address);
+                        sqlCmd.Parameters.AddWithValue("role", oEmp.role);
+                        sqlCmd.Parameters.AddWithValue("nationality", oEmp.nationality);
+                        sqlCmd.ExecuteNonQuery();
+                    }
+                }
+                ans = true;
+            }catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                ans = false;
+            }
+
+            return new JsonResult(ans);
+        }
+
+        [HttpPut][Route("/RemoveEmployee")]
+        public JsonResult DeleteEmployee(int id)
+        {
+            var ans = false;
+            try
+            {
+                var connection = new DataConnection();
+                string procedure = "sp_DeleteEmployee";
+                using(var conn = new SqlConnection(connection.GetString()))
+                {
+                    using(var sqlCmd = new SqlCommand(procedure, conn))
+                    {
+                        sqlCmd.CommandType = CommandType.StoredProcedure;
+                        sqlCmd.Parameters.AddWithValue("id", id);
+                        conn.Open();
+                        sqlCmd.ExecuteNonQuery();
+                        ans = true;
+                    }
+                }
+            }catch( Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                ans = false;
+            }
+
+            return new JsonResult(ans);
+        }
     }
 }
