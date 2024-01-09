@@ -80,11 +80,11 @@ namespace PuntoDeVenta_API.Controllers
                     using(var sqlCmd = new SqlCommand(procedure, conn))
                     {
                         sqlCmd.CommandType = CommandType.StoredProcedure;
-                        sqlCmd.Parameters.AddWithValue("id", id);
+                        sqlCmd.Parameters.AddWithValue("id",id);
                         conn.Open();
                         using(dReader = sqlCmd.ExecuteReader())
                         {
-                            if (dReader.Read())
+                            if (dReader.Read())  
                             {
                                 emp.name = dReader["name"].ToString();
                                 emp.lastname = dReader["lastname"].ToString();
@@ -167,6 +167,7 @@ namespace PuntoDeVenta_API.Controllers
                     using(var sqlCmd = new SqlCommand(procedure, conn))
                     {
                         sqlCmd.CommandType = CommandType.StoredProcedure;
+                        conn.Open();
                         sqlCmd.Parameters.AddWithValue("id", oEmp.id);
                         sqlCmd.Parameters.AddWithValue("name", oEmp.name);
                         sqlCmd.Parameters.AddWithValue("lastname", oEmp.lastname);
@@ -181,6 +182,7 @@ namespace PuntoDeVenta_API.Controllers
                         sqlCmd.Parameters.AddWithValue("nationality", oEmp.nationality);
                         sqlCmd.ExecuteNonQuery();
                     }
+                    conn.Close();
                 }
                 ans = true;
             }catch(Exception ex)
