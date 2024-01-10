@@ -6,15 +6,15 @@ namespace PuntoDeVenta_API.Models
 {
     public class ProductModel
     {
-        public int product_id { get; set; }
+        public int Product_id { get; set; }
         [Required]
-        public string? name { get; set; }
+        public string? Name { get; set; }
         [Required]
-        public string? description { get; set; }
+        public string? Description { get; set; }
         [Required]
-        public int? price { get; set; }
+        public int Price { get; set; }
         [Required]
-        public int? quantity { get; set; }
+        public int Quantity { get; set; }
 
     }
 }
