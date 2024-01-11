@@ -131,5 +131,70 @@ namespace PuntoDeVenta_API.Controllers
 
             return new JsonResult(ans);
         }
+
+        [HttpPut][Route("/EditClient")]
+
+        public JsonResult EditClient(ClientModel client)
+        {
+            bool ans;
+            try
+            {
+                DataConnection connection = new DataConnection();
+                string procedure = "sp_EditClient";
+                using(var conn = new SqlConnection(connection.GetString()))
+                {
+                    using(var sqlCmd = new SqlCommand(procedure, conn))
+                    {
+                        sqlCmd.CommandType = CommandType.StoredProcedure;
+                        conn.Open();
+                        sqlCmd.Parameters.AddWithValue("id", client.Client_id);
+                        sqlCmd.Parameters.AddWithValue("name", client.Name);
+                        sqlCmd.Parameters.AddWithValue("tel", client.Tel);
+                        sqlCmd.Parameters.AddWithValue("address", client.Address);
+                        sqlCmd.Parameters.AddWithValue("client_type", client.Client_type);
+                        sqlCmd.Parameters.AddWithValue("email", client.Email);
+                        sqlCmd.Parameters.AddWithValue("url", client.Url);
+                        sqlCmd.Parameters.AddWithValue("client_notes", client.Client_notes);
+                        sqlCmd.ExecuteNonQuery();
+                        ans = true;
+                    }
+                    conn.Close();
+                }
+            }catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                ans = false;
+            }
+
+            return new JsonResult(ans);
+        }
+        [HttpPut][Route("/DeleteClient")]
+        public JsonResult DeleteClient(int id)
+        {
+            bool ans;
+            try
+            {
+                var connection = new DataConnection();
+                string procedure = "sp_DeleteClient";
+                using(var conn = new SqlConnection(connection.GetString()))
+                {
+                    using(var sqlCmd = new SqlCommand(procedure, conn))
+                    {
+                        sqlCmd.CommandType = CommandType.StoredProcedure;
+                        conn.Open();
+                        sqlCmd.Parameters.AddWithValue("id", id);
+                        sqlCmd.ExecuteNonQuery();
+                        ans = true;
+                    }
+                    conn.Close();
+                }
+            }catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                ans = false;                
+            }
+
+            return new JsonResult(ans);
+        }
     }
 }
