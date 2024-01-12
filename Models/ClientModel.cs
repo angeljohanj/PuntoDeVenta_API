@@ -11,10 +11,10 @@ namespace PuntoDeVenta_API.Models
         public string? Tel { get; set; }
         [Required]
         public string? Address { get; set; }
-        [Required]
-        public string? Client_type { get; set; }
 
         public string? Client_notes { get; set; }
+        [Required]
+        public string? Client_type { get; set; }
         [Required]
         public string? Email { get; set; }
         [Required]

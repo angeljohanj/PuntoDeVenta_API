@@ -133,7 +133,6 @@ namespace PuntoDeVenta_API.Controllers
         }
 
         [HttpPut][Route("/EditClient")]
-
         public JsonResult EditClient(ClientModel client)
         {
             bool ans;
@@ -154,7 +153,6 @@ namespace PuntoDeVenta_API.Controllers
                         sqlCmd.Parameters.AddWithValue("client_type", client.Client_type);
                         sqlCmd.Parameters.AddWithValue("email", client.Email);
                         sqlCmd.Parameters.AddWithValue("url", client.Url);
-                        sqlCmd.Parameters.AddWithValue("client_notes", client.Client_notes);
                         sqlCmd.ExecuteNonQuery();
                         ans = true;
                     }
