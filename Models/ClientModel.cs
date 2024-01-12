@@ -13,7 +13,7 @@ namespace PuntoDeVenta_API.Models
         public string? Address { get; set; }
         [Required]
         public string? Client_type { get; set; }
-        [Required]
+
         public string? Client_notes { get; set; }
         [Required]
         public string? Email { get; set; }
