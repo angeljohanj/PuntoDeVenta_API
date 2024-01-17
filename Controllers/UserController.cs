@@ -5,6 +5,10 @@ using PuntoDeVenta_API.Models;
 using System.Data.SqlClient;
 using System.Data;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PuntoDeVenta_API.Controllers
 {
@@ -84,7 +88,7 @@ namespace PuntoDeVenta_API.Controllers
         }
 
         [HttpPost][Route("/ValidateLogin")]
-        public JsonResult ValidateLogin(UserModel credentials)
+        public async Task<JsonResult> ValidateLogin(UserModel credentials)
         {
             var user = new UserModel();
             try
@@ -104,6 +108,17 @@ namespace PuntoDeVenta_API.Controllers
                                 var test = dReader.Read;
                                 user.Username = dReader["username"].ToString();
                                 user.Role = dReader["role"].ToString();
+
+                                var claims = new List<Claim>()
+                                {
+                                    new Claim(ClaimTypes.Name, user.Username),
+                                    new Claim(ClaimTypes.Role, user.Role)
+                                };
+
+                                var claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimIdentity));
+                                
                             }
                             else
                             {
