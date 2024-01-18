@@ -16,8 +16,8 @@ namespace PuntoDeVenta_API.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        public string[] Parameters = { "username","password","role" };
-        public string[] procedures = { "sp_Create", "sp_List", "sp_GetAUser", "sp_Edit", "sp_Delete", "sp_ValidateLogin" }; 
+        public string[] Parameters = { "username","password","role","id" };
+        public string[] Procedures = { "sp_Create", "sp_List", "sp_GetAUser", "sp_Edit", "sp_Delete", "sp_ValidateLogin" }; 
         private DataConnection connection = new DataConnection();
 
         [HttpPost][Route("/Create")]
@@ -28,7 +28,7 @@ namespace PuntoDeVenta_API.Controllers
             {
                 using (var conn = new SqlConnection(connection.GetString()))
                 {
-                    using(var sqlCmd = new SqlCommand(procedures[0], conn))
+                    using(var sqlCmd = new SqlCommand(Procedures[0], conn))
                     {
                         sqlCmd.CommandType = CommandType.StoredProcedure;
                         conn.Open();
@@ -57,7 +57,7 @@ namespace PuntoDeVenta_API.Controllers
             {
                 using(var conn = new SqlConnection(connection.GetString()))
                 {
-                    using( var sqlCmd = new SqlCommand(procedures[1], conn))
+                    using( var sqlCmd = new SqlCommand(Procedures[1], conn))
                     {
                         sqlCmd.CommandType = CommandType.StoredProcedure;
                         conn.Open();
@@ -87,6 +87,72 @@ namespace PuntoDeVenta_API.Controllers
             return new JsonResult(users);
         }
 
+        [HttpGet]
+        [Route("/Get")]
+        public JsonResult Get(int id)
+        {
+            var user = new UserModel();
+            try
+            {
+                using(var conn = new SqlConnection(connection.GetString()))
+                {
+                    using(var sqlCmd = new SqlCommand(Procedures[2], conn))
+                    {
+                        sqlCmd.CommandType = CommandType.StoredProcedure;
+                        conn.Open();
+                        sqlCmd.Parameters.AddWithValue(Parameters[3], id);
+                        using(var dReader = sqlCmd.ExecuteReader())
+                        {
+                            if (dReader.Read())
+                            {
+                                user.Id = Convert.ToInt32(dReader["id"]);
+                                user.Username = dReader["username"].ToString();
+                                user.Role = dReader["role"].ToString();                                    
+                            }
+                            dReader.Close();
+                        }
+                    }
+                    conn.Close();
+                }
+            }catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+                user = null;
+            }
+
+            return new JsonResult(user);
+        }
+
+        [HttpPut]
+        [Route("/Delete")]
+
+        public JsonResult Delete(int id)
+        {
+            var ans = false;
+            try
+            {
+                using(var conn = new SqlConnection(connection.GetString()))
+                {
+                    using(SqlCommand cmd = new SqlCommand(Procedures[4], conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        conn.Open();
+                        cmd.Parameters.AddWithValue(Parameters[3], id);
+                        var affectedRows = cmd.ExecuteNonQuery();
+                        ans = true;                     
+                        
+                    }
+                    conn.Close();
+                }
+            }catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+                ans = false;
+            }
+
+            return new JsonResult(ans);
+        }
+
         [HttpPost][Route("/ValidateLogin")]
         public async Task<JsonResult> ValidateLogin(UserModel credentials)
         {
@@ -95,12 +161,13 @@ namespace PuntoDeVenta_API.Controllers
             {
                 using(var conn = new SqlConnection(connection.GetString()))
                 {
-                    using(var sqlCmd = new SqlCommand(procedures[5], conn))
+                    using(var sqlCmd = new SqlCommand(Procedures[5], conn))
                     {
                         sqlCmd.CommandType = CommandType.StoredProcedure;
                         conn.Open();
                         sqlCmd.Parameters.AddWithValue(Parameters[0], credentials.Username);
                         sqlCmd.Parameters.AddWithValue(Parameters[1], credentials.Password);
+                        sqlCmd.Parameters.AddWithValue(Parameters[2], credentials.Role);
                         using (var dReader = sqlCmd.ExecuteReader())
                         {
                             if (dReader.Read())
