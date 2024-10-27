@@ -1,11 +1,8 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Mapster;
 using Microsoft.AspNetCore.Mvc;
+using PuntoDeVenta_API.ADMIN.DTOs.Responses;
 using PuntoDeVenta_API.ADMIN.Models;
-using PuntoDeVenta_API.Data;
-using System.Data;
-using System.Data.SqlClient;
-using System.Security.Claims;
+using PuntoDeVenta_API.ADMIN.Services;
 
 namespace PuntoDeVenta_API.ADMIN.Controllers
 {
@@ -13,23 +10,21 @@ namespace PuntoDeVenta_API.ADMIN.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-
-        public string[] Parameters = { "username", "password", "role", "id" };
-        public string[] Procedures = { "sp_Create", "sp_List", "sp_GetAUser", "sp_Edit", "sp_Delete", "sp_ValidateLogin" };
-        private DataConnection connection = new DataConnection();
-
-        [HttpPost]
+        private readonly UserServices _userServices;
+        public UserController()
+        {
+            _userServices = new UserServices();
+        }
+        /*[HttpPost]
         [Route("/Create")]
         public JsonResult Create(UserModel user)
         {
-
-
-            /*var ans = false;
+            var ans = false;
             try
             {
                 using (var conn = new SqlConnection(connection.GetString()))
                 {
-                    using(var sqlCmd = new SqlCommand(Procedures[0], conn))
+                    using (var sqlCmd = new SqlCommand(Procedures[0], conn))
                     {
                         sqlCmd.CommandType = CommandType.StoredProcedure;
                         conn.Open();
@@ -41,93 +36,45 @@ namespace PuntoDeVenta_API.ADMIN.Controllers
                     }
                     conn.Close();
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 ans = false;
             }
 
-            return new JsonResult(ans);*/
-        }
+            return new JsonResult(ans);
+        }*/
 
         [HttpGet]
         [Route("/List")]
-        public JsonResult List()
+        public async Task<JsonResult> List()
         {
-            var users = new List<UserModel>();
+            List<UserModel> users = new List<UserModel>();
             try
             {
-                using (var conn = new SqlConnection(connection.GetString()))
+                users = await _userServices.GetUsers();
+                var oUsers = users.Adapt<SendUsersDTO>();
+                if (!ModelState.IsValid)
                 {
-                    using (var sqlCmd = new SqlCommand(Procedures[1], conn))
-                    {
-                        sqlCmd.CommandType = CommandType.StoredProcedure;
-                        conn.Open();
-                        using (var dReader = sqlCmd.ExecuteReader())
-                        {
-                            while (dReader.Read())
-                            {
-                                users.Add(new UserModel()
-                                {
-                                    Id = Convert.ToInt32(dReader["id"]),
-                                    Username = dReader["username"].ToString(),
-                                    Password = dReader["password"].ToString(),
-                                    Role = dReader["role"].ToString()
-                                });
-                            }
-                            dReader.Close();
-                        }
-                    }
-                    conn.Close();
+                    return new JsonResult(oUsers);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                users = null;
+                return new JsonResult(ex.Message);
             }
-
             return new JsonResult(users);
         }
 
         [HttpGet]
-        [Route("/Get")]
-        public JsonResult Get(int id)
+        [Route("/Get/{id}")]
+        public JsonResult Get([FromRoute] int id)
         {
-            var user = new UserModel();
-            try
-            {
-                using (var conn = new SqlConnection(connection.GetString()))
-                {
-                    using (var sqlCmd = new SqlCommand(Procedures[2], conn))
-                    {
-                        sqlCmd.CommandType = CommandType.StoredProcedure;
-                        conn.Open();
-                        sqlCmd.Parameters.AddWithValue(Parameters[3], id);
-                        using (var dReader = sqlCmd.ExecuteReader())
-                        {
-                            if (dReader.Read())
-                            {
-                                user.Id = Convert.ToInt32(dReader["id"]);
-                                user.Username = dReader["username"].ToString();
-                                user.Role = dReader["role"].ToString();
-                            }
-                            dReader.Close();
-                        }
-                    }
-                    conn.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                user = null;
-            }
-
-            return new JsonResult(user);
+            return new JsonResult(default);
         }
 
-        [HttpPut]
+        /*[HttpPut]
         [Route("/Delete")]
 
         public JsonResult Delete(int id)
@@ -156,9 +103,9 @@ namespace PuntoDeVenta_API.ADMIN.Controllers
             }
 
             return new JsonResult(ans);
-        }
+        }*/
 
-        [HttpPost]
+        /*[HttpPost]
         [Route("/ValidateLogin")]
         public async Task<JsonResult> ValidateLogin(UserModel credentials)
         {
@@ -211,6 +158,6 @@ namespace PuntoDeVenta_API.ADMIN.Controllers
             }
 
             return new JsonResult(user);
-        }
+        }*/
     }
 }

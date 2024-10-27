@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Mapster" Version="7.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="7.0.14" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.13" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
@@ -14,9 +15,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ADMIN\DTOs\" />
-    <Folder Include="ADMIN\Services\" />
+    <Folder Include="ADMIN\DTOs\Requests\" />
     <Folder Include="DependencyInjectios\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>
