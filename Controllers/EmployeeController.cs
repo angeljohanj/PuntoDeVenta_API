@@ -16,6 +16,62 @@ namespace PuntoDeVenta_API.Controllers
     public class EmployeeController : ControllerBase
     {
 
+        [HttpPost]
+        [Route("/SearchEmp")]
+
+        public JsonResult Search(string search)
+        {
+            var result = new List<EmployeeModel>();
+            string procedure = "sp_SearchEmployee";
+            var connection = new DataConnection();
+            try
+            {
+                using(var conn = new SqlConnection(connection.GetString()))
+                {
+                    using(var sqlCmd = new SqlCommand(procedure, conn))
+                    {
+                        sqlCmd.CommandType = CommandType.StoredProcedure;
+                        conn.Open();
+                        sqlCmd.Parameters.AddWithValue("search", search);
+                        //sqlCmd.Parameters.AddWithValue("name", search.Name);
+                        //sqlCmd.Parameters.AddWithValue("lastname", search.Lastname);
+                        //sqlCmd.Parameters.AddWithValue("age", search.Age);
+                        //sqlCmd.Parameters.AddWithValue("cedula", search.Cedula);
+                        //sqlCmd.Parameters.AddWithValue("email", search.Email);
+                        //sqlCmd.Parameters.AddWithValue("role", search.Role);
+                        using(var dReader = sqlCmd.ExecuteReader())
+                        {
+                            while (dReader.Read())
+                            {
+                                result.Add(new EmployeeModel
+                                {
+                                    Id = Convert.ToInt32(dReader["id"]),
+                                    Name = dReader["name"].ToString(),
+                                    Lastname = dReader["lastname"].ToString(),
+                                    Age = dReader["age"].ToString(),
+                                    Cedula = dReader["cedula"].ToString(),
+                                    Cel = dReader["cel"].ToString(),
+                                    Tel = dReader["tel"].ToString(),
+                                    Email = dReader["email"].ToString(),
+                                    Birthdate = Convert.ToDateTime(dReader["birthdate"]),
+                                    Address = dReader["address"].ToString(),
+                                    Role = dReader["role"].ToString(),
+                                    Nationality = dReader["nationality"].ToString(),
+                                });
+                            }
+                            dReader.Close();
+                        }
+                    }
+                    conn.Close();
+                }
+            }catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                result = null;
+            }
+            return new JsonResult(result);
+        }
+
         [HttpGet][Route("/ListEmployees")]
 
         public JsonResult ListEmployees()
@@ -38,18 +94,18 @@ namespace PuntoDeVenta_API.Controllers
                         {
                             emps.Add(new EmployeeModel()
                             {
-                                id = Convert.ToInt32(dReader["id"]),
-                                name = dReader["name"].ToString(),
-                                lastname = dReader["lastname"].ToString(),
-                                age = dReader["age"].ToString(),
-                                cedula = dReader["cedula"].ToString(),
-                                cel = dReader["cel"].ToString(),
-                                tel = dReader["tel"].ToString(),
-                                email = dReader["email"].ToString(),
-                                birthdate = Convert.ToDateTime(dReader["birthdate"]),
-                                address = dReader["address"].ToString(),
-                                role = dReader["role"].ToString(),
-                                nationality = dReader["nationality"].ToString(),
+                                Id= Convert.ToInt32(dReader["id"]),
+                                Name = dReader["name"].ToString(),
+                                Lastname = dReader["lastname"].ToString(),
+                                Age = dReader["age"].ToString(),
+                                Cedula = dReader["cedula"].ToString(),
+                                Cel = dReader["cel"].ToString(),
+                                Tel = dReader["tel"].ToString(),
+                                Email = dReader["email"].ToString(),
+                                Birthdate = Convert.ToDateTime(dReader["birthdate"]),
+                                Address = dReader["address"].ToString(),
+                                Role = dReader["role"].ToString(),
+                                Nationality = dReader["nationality"].ToString(),
                             });
                         }
                         conn.Close();
@@ -86,17 +142,17 @@ namespace PuntoDeVenta_API.Controllers
                         {
                             if (dReader.Read())  
                             {
-                                emp.name = dReader["name"].ToString();
-                                emp.lastname = dReader["lastname"].ToString();
-                                emp.age = dReader["age"].ToString();
-                                emp.cedula = dReader["cedula"].ToString();
-                                emp.cel = dReader["cel"].ToString();
-                                emp.tel = dReader["tel"].ToString();
-                                emp.email = dReader["email"].ToString();
-                                emp.birthdate = Convert.ToDateTime(dReader["birthdate"]);
-                                emp.address = dReader["address"].ToString();
-                                emp.role = dReader["role"].ToString();
-                                emp.nationality = dReader["nationality"].ToString();
+                                emp.Name = dReader["name"].ToString();
+                                emp.Lastname = dReader["lastname"].ToString();
+                                emp.Age = dReader["age"].ToString();
+                                emp.Cedula = dReader["cedula"].ToString();
+                                emp.Cel = dReader["cel"].ToString();
+                                emp.Tel = dReader["tel"].ToString();
+                                emp.Email = dReader["email"].ToString();
+                                emp.Birthdate = Convert.ToDateTime(dReader["birthdate"]);
+                                emp.Address = dReader["address"].ToString();
+                                emp.Role = dReader["role"].ToString();
+                                emp.Nationality = dReader["nationality"].ToString();
                             }
                             else
                             {
@@ -127,17 +183,17 @@ namespace PuntoDeVenta_API.Controllers
                     using( var sqlCmd = new SqlCommand(procedure, conn))
                     {
                         sqlCmd.CommandType = CommandType.StoredProcedure;
-                        sqlCmd.Parameters.AddWithValue("name", newEmp.name);
-                        sqlCmd.Parameters.AddWithValue("lastname", newEmp.lastname);
-                        sqlCmd.Parameters.AddWithValue("age", newEmp.age);
-                        sqlCmd.Parameters.AddWithValue("cedula", newEmp.cedula);
-                        sqlCmd.Parameters.AddWithValue("cel", newEmp.cel);
-                        sqlCmd.Parameters.AddWithValue("tel", newEmp.tel);
-                        sqlCmd.Parameters.AddWithValue("email", newEmp.email);
-                        sqlCmd.Parameters.AddWithValue("birthdate", newEmp.birthdate);
-                        sqlCmd.Parameters.AddWithValue("address", newEmp.address);
-                        sqlCmd.Parameters.AddWithValue("role", newEmp.role);
-                        sqlCmd.Parameters.AddWithValue("nationality", newEmp.nationality);
+                        sqlCmd.Parameters.AddWithValue("name", newEmp.Name);
+                        sqlCmd.Parameters.AddWithValue("lastname", newEmp.Lastname);
+                        sqlCmd.Parameters.AddWithValue("age", newEmp.Age);
+                        sqlCmd.Parameters.AddWithValue("cedula", newEmp.Cedula);
+                        sqlCmd.Parameters.AddWithValue("cel", newEmp.Cel);
+                        sqlCmd.Parameters.AddWithValue("tel", newEmp.Tel);
+                        sqlCmd.Parameters.AddWithValue("email", newEmp.Email);
+                        sqlCmd.Parameters.AddWithValue("birthdate", newEmp.Birthdate);
+                        sqlCmd.Parameters.AddWithValue("address", newEmp.Address);
+                        sqlCmd.Parameters.AddWithValue("role", newEmp.Role);
+                        sqlCmd.Parameters.AddWithValue("nationality", newEmp.Nationality);
                         conn.Open();
                         var result= sqlCmd.ExecuteNonQuery();
                         Console.WriteLine(result + "rows were affected!");
@@ -168,18 +224,18 @@ namespace PuntoDeVenta_API.Controllers
                     {
                         sqlCmd.CommandType = CommandType.StoredProcedure;
                         conn.Open();
-                        sqlCmd.Parameters.AddWithValue("id", oEmp.id);
-                        sqlCmd.Parameters.AddWithValue("name", oEmp.name);
-                        sqlCmd.Parameters.AddWithValue("lastname", oEmp.lastname);
-                        sqlCmd.Parameters.AddWithValue("age", oEmp.age);
-                        sqlCmd.Parameters.AddWithValue("cedula", oEmp.cedula);
-                        sqlCmd.Parameters.AddWithValue("cel", oEmp.cel);
-                        sqlCmd.Parameters.AddWithValue("tel", oEmp.tel);
-                        sqlCmd.Parameters.AddWithValue("email", oEmp.email);
-                        sqlCmd.Parameters.AddWithValue("birthdate", oEmp.birthdate);
-                        sqlCmd.Parameters.AddWithValue("address", oEmp.address);
-                        sqlCmd.Parameters.AddWithValue("role", oEmp.role);
-                        sqlCmd.Parameters.AddWithValue("nationality", oEmp.nationality);
+                        sqlCmd.Parameters.AddWithValue("id", oEmp.Id);
+                        sqlCmd.Parameters.AddWithValue("name", oEmp.Name);
+                        sqlCmd.Parameters.AddWithValue("lastname", oEmp.Lastname);
+                        sqlCmd.Parameters.AddWithValue("age", oEmp.Age);
+                        sqlCmd.Parameters.AddWithValue("cedula", oEmp.Cedula);
+                        sqlCmd.Parameters.AddWithValue("cel", oEmp.Cel);
+                        sqlCmd.Parameters.AddWithValue("tel", oEmp.Tel);
+                        sqlCmd.Parameters.AddWithValue("email", oEmp.Email);
+                        sqlCmd.Parameters.AddWithValue("birthdate", oEmp.Birthdate);
+                        sqlCmd.Parameters.AddWithValue("address", oEmp.Address);
+                        sqlCmd.Parameters.AddWithValue("role", oEmp.Role);
+                        sqlCmd.Parameters.AddWithValue("nationality", oEmp.Nationality);
                         sqlCmd.ExecuteNonQuery();
                     }
                     conn.Close();

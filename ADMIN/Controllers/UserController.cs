@@ -1,29 +1,30 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using PuntoDeVenta_API.Data;
-using PuntoDeVenta_API.Models;
-using System.Data.SqlClient;
-using System.Data;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
+using PuntoDeVenta_API.ADMIN.Models;
+using PuntoDeVenta_API.Data;
+using System.Data;
+using System.Data.SqlClient;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
 
-namespace PuntoDeVenta_API.Controllers
+namespace PuntoDeVenta_API.ADMIN.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
-        public string[] Parameters = { "username","password","role","id" };
-        public string[] Procedures = { "sp_Create", "sp_List", "sp_GetAUser", "sp_Edit", "sp_Delete", "sp_ValidateLogin" }; 
+
+        public string[] Parameters = { "username", "password", "role", "id" };
+        public string[] Procedures = { "sp_Create", "sp_List", "sp_GetAUser", "sp_Edit", "sp_Delete", "sp_ValidateLogin" };
         private DataConnection connection = new DataConnection();
 
-        [HttpPost][Route("/Create")]
+        [HttpPost]
+        [Route("/Create")]
         public JsonResult Create(UserModel user)
         {
-            var ans = false;
+
+
+            /*var ans = false;
             try
             {
                 using (var conn = new SqlConnection(connection.GetString()))
@@ -46,22 +47,23 @@ namespace PuntoDeVenta_API.Controllers
                 ans = false;
             }
 
-            return new JsonResult(ans);
+            return new JsonResult(ans);*/
         }
 
-        [HttpGet][Route("/List")]
+        [HttpGet]
+        [Route("/List")]
         public JsonResult List()
         {
             var users = new List<UserModel>();
             try
             {
-                using(var conn = new SqlConnection(connection.GetString()))
+                using (var conn = new SqlConnection(connection.GetString()))
                 {
-                    using( var sqlCmd = new SqlCommand(Procedures[1], conn))
+                    using (var sqlCmd = new SqlCommand(Procedures[1], conn))
                     {
                         sqlCmd.CommandType = CommandType.StoredProcedure;
                         conn.Open();
-                        using(var dReader = sqlCmd.ExecuteReader())
+                        using (var dReader = sqlCmd.ExecuteReader())
                         {
                             while (dReader.Read())
                             {
@@ -78,7 +80,8 @@ namespace PuntoDeVenta_API.Controllers
                     }
                     conn.Close();
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 users = null;
@@ -94,27 +97,28 @@ namespace PuntoDeVenta_API.Controllers
             var user = new UserModel();
             try
             {
-                using(var conn = new SqlConnection(connection.GetString()))
+                using (var conn = new SqlConnection(connection.GetString()))
                 {
-                    using(var sqlCmd = new SqlCommand(Procedures[2], conn))
+                    using (var sqlCmd = new SqlCommand(Procedures[2], conn))
                     {
                         sqlCmd.CommandType = CommandType.StoredProcedure;
                         conn.Open();
                         sqlCmd.Parameters.AddWithValue(Parameters[3], id);
-                        using(var dReader = sqlCmd.ExecuteReader())
+                        using (var dReader = sqlCmd.ExecuteReader())
                         {
                             if (dReader.Read())
                             {
                                 user.Id = Convert.ToInt32(dReader["id"]);
                                 user.Username = dReader["username"].ToString();
-                                user.Role = dReader["role"].ToString();                                    
+                                user.Role = dReader["role"].ToString();
                             }
                             dReader.Close();
                         }
                     }
                     conn.Close();
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine(ex);
                 user = null;
@@ -131,20 +135,21 @@ namespace PuntoDeVenta_API.Controllers
             var ans = false;
             try
             {
-                using(var conn = new SqlConnection(connection.GetString()))
+                using (var conn = new SqlConnection(connection.GetString()))
                 {
-                    using(SqlCommand cmd = new SqlCommand(Procedures[4], conn))
+                    using (SqlCommand cmd = new SqlCommand(Procedures[4], conn))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         conn.Open();
                         cmd.Parameters.AddWithValue(Parameters[3], id);
                         var affectedRows = cmd.ExecuteNonQuery();
-                        ans = true;                     
-                        
+                        ans = true;
+
                     }
                     conn.Close();
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine(ex);
                 ans = false;
@@ -153,15 +158,16 @@ namespace PuntoDeVenta_API.Controllers
             return new JsonResult(ans);
         }
 
-        [HttpPost][Route("/ValidateLogin")]
+        [HttpPost]
+        [Route("/ValidateLogin")]
         public async Task<JsonResult> ValidateLogin(UserModel credentials)
         {
             var user = new UserModel();
             try
             {
-                using(var conn = new SqlConnection(connection.GetString()))
+                using (var conn = new SqlConnection(connection.GetString()))
                 {
-                    using(var sqlCmd = new SqlCommand(Procedures[5], conn))
+                    using (var sqlCmd = new SqlCommand(Procedures[5], conn))
                     {
                         sqlCmd.CommandType = CommandType.StoredProcedure;
                         conn.Open();
@@ -185,7 +191,7 @@ namespace PuntoDeVenta_API.Controllers
                                 var claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
                                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimIdentity));
-                                
+
                             }
                             else
                             {
@@ -197,7 +203,8 @@ namespace PuntoDeVenta_API.Controllers
                     }
                     conn.Close();
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine(ex);
                 user = null;

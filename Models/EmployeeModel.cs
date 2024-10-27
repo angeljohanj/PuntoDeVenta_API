@@ -15,18 +15,18 @@ namespace PuntoDeVenta_API.Models
     //}
     public class EmployeeModel
     {
-        public int id { get; set; }
+        public int Id { get; set; }
 
-        [Required] public string? name { get; set; }
-        [Required] public string? lastname { get; set; }
-        [Required] public string? age { get; set; }
-        [Required] public string? cedula { get; set; }
-        [Required] public string? cel { get; set; }
-        [Required] public string? tel { get; set; }
-        [Required] public string? email { get; set; }
-        [Required] public DateTime? birthdate { get; set; }
-        [Required] public string? address { get; set; }
-        [Required] public string? role { get; set; }
-        [Required] public string? nationality { get; set; }
+        [Required] public string? Name { get; set; }
+        [Required] public string? Lastname { get; set; }
+        [Required] public string? Age { get; set; }
+        [Required] public string? Cedula { get; set; }
+        [Required] public string? Cel { get; set; }
+        [Required] public string? Tel { get; set; }
+        [Required] public string? Email { get; set; }
+        [Required] public DateTime? Birthdate { get; set; }
+        [Required] public string? Address { get; set; }
+        [Required] public string? Role { get; set; }
+        [Required] public string? Nationality { get; set; }
     }
 }

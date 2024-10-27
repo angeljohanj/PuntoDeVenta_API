@@ -13,4 +13,10 @@
     <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ADMIN\DTOs\" />
+    <Folder Include="ADMIN\Services\" />
+    <Folder Include="DependencyInjectios\" />
+  </ItemGroup>
+
 </Project>
