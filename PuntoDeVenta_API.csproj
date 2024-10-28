@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <Folder Include="ADMIN\DTOs\Requests\" />
-    <Folder Include="DependencyInjectios\" />
+    <Folder Include="DependencyInjections\" />
     <Folder Include="Services\" />
   </ItemGroup>
 

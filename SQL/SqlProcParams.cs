@@ -1,4 +1,4 @@
-﻿using PuntoDeVenta_API.ADMIN.Interfaces;
+﻿using PuntoDeVenta_API.ADMIN.Interfaces.SqlInterfaces;
 
 namespace PuntoDeVenta_API.SQL
 {
@@ -14,5 +14,9 @@ namespace PuntoDeVenta_API.SQL
             return _sqlParams[0];
         }
 
+        public string GetIdParam()
+        {
+            return _sqlParams[3];
+        }
     }
 }

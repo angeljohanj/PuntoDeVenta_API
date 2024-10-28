@@ -54,9 +54,9 @@ namespace PuntoDeVenta_API.ADMIN.Controllers
             try
             {
                 users = await _userServices.GetUsers();
-                var oUsers = users.Adapt<SendUsersDTO>();
-                if (!ModelState.IsValid)
+                if (ModelState.IsValid)
                 {
+                    var oUsers = users.Adapt<List<SendUsersDTO>>();
                     return new JsonResult(oUsers);
                 }
             }
@@ -69,9 +69,23 @@ namespace PuntoDeVenta_API.ADMIN.Controllers
 
         [HttpGet]
         [Route("/Get/{id}")]
-        public JsonResult Get([FromRoute] int id)
+        public async Task<JsonResult> Get([FromRoute] int id)
         {
-            return new JsonResult(default);
+            var user = await _userServices.GetASingleUser(id);
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var oUser = user.Adapt<SendUsersDTO>();
+                    return new JsonResult(oUser);
+                }
+            }
+            catch (Exception ex)
+            {
+                await Console.Out.WriteLineAsync(ex.Message);
+                user = null;
+            }
+            return new JsonResult(user);
         }
 
         /*[HttpPut]

@@ -1,8 +1,8 @@
-﻿using System.Data.SqlTypes;
+﻿using PuntoDeVenta_API.Interfaces;
 
 namespace PuntoDeVenta_API.Data
 {
-    public class DataConnection
+    public class DataConnection : IDataConnection
     {
         private readonly string sqlString = string.Empty;
         public DataConnection()

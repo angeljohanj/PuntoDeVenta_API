@@ -46,6 +46,31 @@ namespace PuntoDeVenta_API.ADMIN.Services
             }
             return users;
         }
+        public async Task<UserModel> GetASingleUser(int id)
+        {
+            var user = new UserModel();
+            try
+            {
+                using var conn = new SqlConnection(_Connection.GetString());
+                using var sqlCmd = new SqlCommand(_sqlProcedures.GetFetchAUserProc(), conn);
+                sqlCmd.CommandType = CommandType.StoredProcedure;
+                conn.Open();
+                sqlCmd.Parameters.AddWithValue(_sql.GetIdParam(), id);
+                using var dReader = await sqlCmd.ExecuteReaderAsync();
+                while (dReader.Read())
+                {
+                    user.Id = Convert.ToInt32(dReader["id"]);
+                    user.Username = dReader["username"].ToString();
+                    user.Role = dReader["role"].ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                await Console.Out.WriteLineAsync(ex.Message);
+                user = null;
+            }
 
+            return user;
+        }
     }
 }
