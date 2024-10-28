@@ -25,7 +25,7 @@ namespace PuntoDeVenta_API.ADMIN.Services
             try
             {
                 using var conn = new SqlConnection(_Connection.GetString());
-                using var sqlCmd = new SqlCommand(_sqlProcedures.GetListUsersProc(), conn);
+                using var sqlCmd = new SqlCommand(_sqlProcedures.ListUSersProc, conn);
                 sqlCmd.CommandType = CommandType.StoredProcedure;
                 conn.Open();
                 using var dReader = await sqlCmd.ExecuteReaderAsync();
@@ -52,7 +52,7 @@ namespace PuntoDeVenta_API.ADMIN.Services
             try
             {
                 using var conn = new SqlConnection(_Connection.GetString());
-                using var sqlCmd = new SqlCommand(_sqlProcedures.GetFetchAUserProc(), conn);
+                using var sqlCmd = new SqlCommand(_sqlProcedures.GetAUserProc, conn);
                 sqlCmd.CommandType = CommandType.StoredProcedure;
                 conn.Open();
                 sqlCmd.Parameters.AddWithValue(_sql.GetIdParam(), id);
@@ -71,6 +71,19 @@ namespace PuntoDeVenta_API.ADMIN.Services
             }
 
             return user;
+        }
+
+        public async Task<bool> DeleteAUser(int id)
+        {
+            var ans = false;
+            try
+            {
+                using var conn = new SqlConnection(_Connection.GetString());
+                using var sqlCmd = new SqlCommand(_sqlProcedures.DeleteUserProc, conn);
+                sqlCmd.CommandType = CommandType.StoredProcedure;
+                conn.Open();
+                sqlCmd.Parameters.AddWithValue(, id)
+            }
         }
     }
 }

@@ -88,36 +88,15 @@ namespace PuntoDeVenta_API.ADMIN.Controllers
             return new JsonResult(user);
         }
 
-        /*[HttpPut]
+        [HttpPut]
         [Route("/Delete")]
 
         public JsonResult Delete(int id)
         {
-            var ans = false;
-            try
-            {
-                using (var conn = new SqlConnection(connection.GetString()))
-                {
-                    using (SqlCommand cmd = new SqlCommand(Procedures[4], conn))
-                    {
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        conn.Open();
-                        cmd.Parameters.AddWithValue(Parameters[3], id);
-                        var affectedRows = cmd.ExecuteNonQuery();
-                        ans = true;
 
-                    }
-                    conn.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                ans = false;
-            }
 
-            return new JsonResult(ans);
-        }*/
+            return new JsonResult(default);
+        }
 
         /*[HttpPost]
         [Route("/ValidateLogin")]
