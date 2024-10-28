@@ -6,5 +6,7 @@ namespace PuntoDeVenta_API.ADMIN.Interfaces
     {
         public Task<List<UserModel>> GetUsers();
         public Task<UserModel> GetASingleUser(int id);
+        public Task<bool> DeleteAUser(int id);
+
     }
 }

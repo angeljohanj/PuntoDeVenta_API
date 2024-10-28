@@ -10,13 +10,13 @@ namespace PuntoDeVenta_API.ADMIN.Services
     public class UserServices : IUserServices
     {
         private readonly DataConnection _Connection;
-        private readonly SqlProcParams _sql;
+        private readonly SqlProcParams _sqlParams;
         private readonly SqlProcedures _sqlProcedures;
 
         public UserServices()
         {
             _Connection = new DataConnection();
-            _sql = new SqlProcParams();
+            _sqlParams = new SqlProcParams();
             _sqlProcedures = new SqlProcedures();
         }
         public async Task<List<UserModel>> GetUsers()
@@ -55,7 +55,7 @@ namespace PuntoDeVenta_API.ADMIN.Services
                 using var sqlCmd = new SqlCommand(_sqlProcedures.GetAUserProc, conn);
                 sqlCmd.CommandType = CommandType.StoredProcedure;
                 conn.Open();
-                sqlCmd.Parameters.AddWithValue(_sql.GetIdParam(), id);
+                sqlCmd.Parameters.AddWithValue(_sqlParams.Id, id);
                 using var dReader = await sqlCmd.ExecuteReaderAsync();
                 while (dReader.Read())
                 {
@@ -82,8 +82,19 @@ namespace PuntoDeVenta_API.ADMIN.Services
                 using var sqlCmd = new SqlCommand(_sqlProcedures.DeleteUserProc, conn);
                 sqlCmd.CommandType = CommandType.StoredProcedure;
                 conn.Open();
-                sqlCmd.Parameters.AddWithValue(, id)
+                sqlCmd.Parameters.AddWithValue(_sqlParams.Id, id);
+                int affectedRows = await sqlCmd.ExecuteNonQueryAsync();
+                if (affectedRows > 0)
+                {
+                    ans = true;
+                }
             }
+            catch (Exception ex)
+            {
+                await Console.Out.WriteLineAsync(ex.Message);
+                ans = false;
+            }
+            return ans;
         }
     }
 }

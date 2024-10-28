@@ -89,13 +89,24 @@ namespace PuntoDeVenta_API.ADMIN.Controllers
         }
 
         [HttpPut]
-        [Route("/Delete")]
-
-        public JsonResult Delete(int id)
+        [Route("/Delete/{id}")]
+        public async Task<JsonResult> Delete([FromRoute] int id)
         {
+            var ans = await _userServices.DeleteAUser(id);
+            try
+            {
+                if (ans)
+                {
+                    return new JsonResult(ans);
+                }
+            }
+            catch (Exception ex)
+            {
+                await Console.Out.WriteLineAsync(ex.Message);
+                ans = false;
+            }
 
-
-            return new JsonResult(default);
+            return new JsonResult(ans);
         }
 
         /*[HttpPost]

@@ -7,7 +7,7 @@
             "username","password","role","id"
         };
 
-        public string UserNameParam { get => _sqlParams[0]; }
-        public string IdParam { get => _sqlParams[3]; }
+        public string Id { get => _sqlParams[3]; }
+        public string Username { get => _sqlParams[0]; }
     }
 }
