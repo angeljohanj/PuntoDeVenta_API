@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <Folder Include="ADMIN\DTOs\Requests\" />
-    <Folder Include="ADMIN\Interfaces\SqlInterfaces\" />
     <Folder Include="DependencyInjections\" />
     <Folder Include="Services\" />
   </ItemGroup>

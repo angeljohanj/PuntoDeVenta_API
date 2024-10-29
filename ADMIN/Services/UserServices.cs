@@ -19,6 +19,39 @@ namespace PuntoDeVenta_API.ADMIN.Services
             _sqlParams = new SqlProcParams();
             _sqlProcedures = new SqlProcedures();
         }
+
+        public async Task<UserModel> ValidateUserLogin(UserModel credentials)
+        {
+            var user = new UserModel();
+            try
+            {
+                using var conn = new SqlConnection(_Connection.GetString());
+                using var sqlCmd = new SqlCommand(_sqlProcedures.ValidateUserLoginProc, conn);
+                sqlCmd.CommandType = CommandType.StoredProcedure;
+                conn.Open();
+                sqlCmd.Parameters.AddWithValue(_sqlParams.Username, credentials.Username);
+                sqlCmd.Parameters.AddWithValue(_sqlParams.Password, credentials.Password);
+                sqlCmd.Parameters.AddWithValue(_sqlParams.Role, credentials.Role);
+                using (var dReader = sqlCmd.ExecuteReader())
+                {
+                    if (dReader.Read())
+                    {
+                        user.Username = dReader["username"].ToString();
+                        user.Role = dReader["role"].ToString();
+                    }
+                    else
+                    {
+                        user = null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await Console.Out.WriteLineAsync(ex.Message);
+                user = null;
+            }
+            return user;
+        }
         public async Task<List<UserModel>> GetUsers()
         {
             var users = new List<UserModel>();

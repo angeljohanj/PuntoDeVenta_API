@@ -88,59 +88,15 @@ namespace PuntoDeVenta_API.ADMIN.Controllers
             return new JsonResult(ans);
         }
 
-        /*[HttpPost]
+        [HttpPost]
         [Route("/ValidateLogin")]
         public async Task<JsonResult> ValidateLogin(UserModel credentials)
         {
-            var user = new UserModel();
-            try
-            {
-                using (var conn = new SqlConnection(connection.GetString()))
-                {
-                    using (var sqlCmd = new SqlCommand(Procedures[5], conn))
-                    {
-                        sqlCmd.CommandType = CommandType.StoredProcedure;
-                        conn.Open();
-                        sqlCmd.Parameters.AddWithValue(Parameters[0], credentials.Username);
-                        sqlCmd.Parameters.AddWithValue(Parameters[1], credentials.Password);
-                        sqlCmd.Parameters.AddWithValue(Parameters[2], credentials.Role);
-                        using (var dReader = sqlCmd.ExecuteReader())
-                        {
-                            if (dReader.Read())
-                            {
-                                var test = dReader.Read;
-                                user.Username = dReader["username"].ToString();
-                                user.Role = dReader["role"].ToString();
-
-                                var claims = new List<Claim>()
-                                {
-                                    new Claim(ClaimTypes.Name, user.Username),
-                                    new Claim(ClaimTypes.Role, user.Role)
-                                };
-
-                                var claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-                                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimIdentity));
-
-                            }
-                            else
-                            {
-                                user = null;
-                            }
-
-                            dReader.Close();
-                        }
-                    }
-                    conn.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                user = null;
-            }
-
-            return new JsonResult(user);
-        }*/
+            var user = await _userServices.ValidateUserLogin(credentials);
+            if (!ModelState.IsValid)
+                throw new NullReferenceException();
+            else
+                return new JsonResult(user);
+        }
     }
 }
