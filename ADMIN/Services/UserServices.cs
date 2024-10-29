@@ -96,5 +96,29 @@ namespace PuntoDeVenta_API.ADMIN.Services
             }
             return ans;
         }
+
+        public async Task<bool> CreateANewUser(UserModel newUser)
+        {
+            bool ans = false;
+            try
+            {
+                using var conn = new SqlConnection(_Connection.GetString());
+                using var sqlCmd = new SqlCommand(_sqlProcedures.CreateUserProc, conn);
+                sqlCmd.CommandType = CommandType.StoredProcedure;
+                conn.Open();
+                sqlCmd.Parameters.AddWithValue(_sqlParams.Username, newUser.Username);
+                sqlCmd.Parameters.AddWithValue(_sqlParams.Password, newUser.Password);
+                sqlCmd.Parameters.AddWithValue(_sqlParams.Role, newUser.Role);
+                await sqlCmd.ExecuteNonQueryAsync();
+                ans = true;
+            }
+            catch (Exception ex)
+            {
+                await Console.Out.WriteLineAsync(ex.Message);
+                ans = false;
+            }
+
+            return ans;
+        }
     }
 }

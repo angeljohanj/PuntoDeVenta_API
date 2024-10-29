@@ -9,5 +9,7 @@
 
         public string Id { get => _sqlParams[3]; }
         public string Username { get => _sqlParams[0]; }
+        public string Password { get => _sqlParams[1]; }
+        public string Role { get => _sqlParams[2]; }
     }
 }

@@ -15,36 +15,16 @@ namespace PuntoDeVenta_API.ADMIN.Controllers
         {
             _userServices = new UserServices();
         }
-        /*[HttpPost]
+        [HttpPost]
         [Route("/Create")]
-        public JsonResult Create(UserModel user)
+        public async Task<JsonResult> Create(UserModel user)
         {
-            var ans = false;
-            try
-            {
-                using (var conn = new SqlConnection(connection.GetString()))
-                {
-                    using (var sqlCmd = new SqlCommand(Procedures[0], conn))
-                    {
-                        sqlCmd.CommandType = CommandType.StoredProcedure;
-                        conn.Open();
-                        sqlCmd.Parameters.AddWithValue(Parameters[0], user.Username);
-                        sqlCmd.Parameters.AddWithValue(Parameters[1], user.Password);
-                        sqlCmd.Parameters.AddWithValue(Parameters[2], user.Role);
-                        sqlCmd.ExecuteNonQuery();
-                        ans = true;
-                    }
-                    conn.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                ans = false;
-            }
+            var ans = await _userServices.CreateANewUser(user);
+            if (ans)
+                return new JsonResult(ans);
 
-            return new JsonResult(ans);
-        }*/
+            return new JsonResult(false);
+        }
 
         [HttpGet]
         [Route("/List")]
@@ -105,7 +85,6 @@ namespace PuntoDeVenta_API.ADMIN.Controllers
                 await Console.Out.WriteLineAsync(ex.Message);
                 ans = false;
             }
-
             return new JsonResult(ans);
         }
 
