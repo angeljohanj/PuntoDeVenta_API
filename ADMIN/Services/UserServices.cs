@@ -19,7 +19,11 @@ namespace PuntoDeVenta_API.ADMIN.Services
             _sqlParams = new SqlProcParams();
             _sqlProcedures = new SqlProcedures();
         }
-
+        /// <summary>
+        /// Method used to validate user login credentials
+        /// </summary>
+        /// <param name="credentials"></param>
+        /// <returns>Usermodel</returns>
         public async Task<UserModel> ValidateUserLogin(UserModel credentials)
         {
             var user = new UserModel();
@@ -52,6 +56,10 @@ namespace PuntoDeVenta_API.ADMIN.Services
             }
             return user;
         }
+        /// <summary>
+        /// Method to list all existing users
+        /// </summary>
+        /// <returns>A lsit of UserModel</returns>
         public async Task<List<UserModel>> GetUsers()
         {
             var users = new List<UserModel>();
@@ -79,6 +87,11 @@ namespace PuntoDeVenta_API.ADMIN.Services
             }
             return users;
         }
+        /// <summary>
+        /// Method to bring a single user 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>UserModel</returns>
         public async Task<UserModel> GetASingleUser(int id)
         {
             var user = new UserModel();
