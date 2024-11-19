@@ -1,25 +1,10 @@
-using Newtonsoft.Json.Serialization;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using PuntoDeVenta_API.DependencyInjections;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers()
-    .AddNewtonsoftJson(option => option.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore)
-    .AddNewtonsoftJson(option => option.SerializerSettings.ContractResolver = new DefaultContractResolver());
-
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(option =>
-    {
-        option.ExpireTimeSpan = TimeSpan.FromMinutes(20);
-        option.AccessDeniedPath = "/ValidateLogin";
-    });
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddInjections();
 
 var app = builder.Build();
 

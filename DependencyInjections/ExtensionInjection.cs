@@ -5,7 +5,10 @@
         public static IServiceCollection AddInjections(this IServiceCollection services)
         {
             services.AddJwtService()
-                .AddUserServices();
+                .AddUserServices()
+                .AddNewtonSoftJsonService()
+                .AddSwaggerServices()
+                .AddControllers();
             return services;
         }
     }
