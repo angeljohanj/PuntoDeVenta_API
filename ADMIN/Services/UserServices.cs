@@ -1,9 +1,9 @@
-﻿using PuntoDeVenta_API.ADMIN.Interfaces;
+﻿using Microsoft.Data.SqlClient;
+using PuntoDeVenta_API.ADMIN.Interfaces;
 using PuntoDeVenta_API.ADMIN.Models;
 using PuntoDeVenta_API.Data;
 using PuntoDeVenta_API.SQL;
 using System.Data;
-using System.Data.SqlClient;
 
 namespace PuntoDeVenta_API.ADMIN.Services
 {
